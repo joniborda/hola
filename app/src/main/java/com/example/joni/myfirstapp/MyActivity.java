@@ -1,15 +1,23 @@
 package com.example.joni.myfirstapp;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+
+import java.util.List;
 
 public class MyActivity extends AppCompatActivity {
+
+    protected static final String EXTRA_MESSAGE = "com.example.joni.myfirstapp.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +30,38 @@ public class MyActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                testIntent(view);
             }
         });
+
+        FloatingActionButton dialer = (FloatingActionButton) findViewById(R.id.dialer);
+        dialer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri number = Uri.parse("tel:1550409597");
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+
+                PackageManager packageManager = getPackageManager();
+                List activities = packageManager.queryIntentActivities(callIntent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+                if (activities.size() > 0 ) {
+                    startActivity(callIntent);
+                }
+
+            }
+        });
+
+        FloatingActionButton fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri location = Uri.parse("geo:0,0?q=1600+Amphitheatre+Parkway,+Mountain+View,+California");
+
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
+                startActivity(mapIntent);
+            }
+        });
+
     }
 
     @Override
@@ -48,5 +84,24 @@ public class MyActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendMessage(View view) {
+        Intent intent = new Intent(this, DisplayMessageActivity.class);
+        EditText editText = (EditText) findViewById(R.id.edit_message);
+
+        String message = editText.getText().toString();
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    public void testIntent(View view) {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO,
+                Uri.fromParts("mailto", "you@example.com", null));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"jon@example.com"}); // recipients
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Email subject");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message text");
+        emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://path/to/email/attachment"));
+        startActivity(emailIntent);
     }
 }

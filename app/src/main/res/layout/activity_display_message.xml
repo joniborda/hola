@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.joni.myfirstapp.MyActivity">
+    tools:context="com.example.joni.myfirstapp.DisplayMessageActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_my" />
+    <include layout="@layout/content_display_message" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -45,7 +45,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginRight="140dp"
+        android:layout_marginRight="135dp"
         android:layout_marginBottom="16dp"
         android:src="@android:drawable/ic_dialog_map" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="200dp"
+        android:layout_marginBottom="16dp"
+        android:src="@android:drawable/ic_menu_my_calendar" />
 </android.support.design.widget.CoordinatorLayout>
