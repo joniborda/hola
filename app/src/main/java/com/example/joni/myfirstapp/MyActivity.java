@@ -6,18 +6,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.support.v7.widget.ShareActionProvider;
 
 import java.util.List;
 
 public class MyActivity extends AppCompatActivity {
 
     protected static final String EXTRA_MESSAGE = "com.example.joni.myfirstapp.MESSAGE";
+    private ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +65,49 @@ public class MyActivity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton fab4 = (FloatingActionButton) findViewById(R.id.fab4);
+        fab4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "compartir con alguien"));
+
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_my, menu);
+
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        // Fetch and store ShareActionProvider
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        MenuItemCompat.setActionProvider(item, mShareActionProvider);
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT,"no se");
+        mShareActionProvider.setShareIntent(intent);
+        // Return true to display menu
         return true;
+    }
+
+    public void doShare() {
+        // populate the share intent with data
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT,"no se");
+        mShareActionProvider.setShareIntent(intent);
+
     }
 
     @Override
@@ -81,6 +120,9 @@ public class MyActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id==R.id.menu_item_share) {
+            doShare();
         }
 
         return super.onOptionsItemSelected(item);
@@ -103,5 +145,12 @@ public class MyActivity extends AppCompatActivity {
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message text");
         emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://path/to/email/attachment"));
         startActivity(emailIntent);
+    }
+
+    // Call to update the share intent
+    private void setShareIntent(Intent shareIntent) {
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
     }
 }
